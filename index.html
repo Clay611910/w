@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucky Draw</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #fdebd3; /* Pastel orange-pink background */
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      font-size: 3em;
+      color: #333;
+    }
+    p {
+      font-size: 1.2em;
+      color: #666;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.5em;
+      color: white;
+      background-color: #ff7f50;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    button:hover {
+      background-color: #ff6347;
+    }
+    .meme-message {
+      font-size: 1.5em;
+      color: #333;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lucky Draw</h1>
+  <p>Click the button below to try your luck!</p>
+  <button id="luckyDrawBtn">Try Your Luck</button>
+  <p id="result"></p>
+  <p class="meme-message" id="memeMessage" style="display: none;">You want it that bad, don't you? 🤔</p>
+  
+  <script>
+    // Check localStorage to see if the user has already clicked
+    const luckyDrawBtn = document.getElementById("luckyDrawBtn");
+    const result = document.getElementById("result");
+    const memeMessage = document.getElementById("memeMessage");
+    const hasClicked = localStorage.getItem("hasClicked");
+
+    if (hasClicked) {
+      luckyDrawBtn.style.display = "none";
+      result.style.display = "none";
+      memeMessage.style.display = "block";
+    }
+
+    luckyDrawBtn.addEventListener("click", () => {
+      const prizes = [
+        "🎉 Congratulations! You won the 1st prize: Rain Perfume!",
+        "🎉 Congratulations! You won the 2nd prize: Black Opium Perfume!",
+        "🎉 Congratulations! You won the 3rd prize: Rose Perfume!",
+        "Sorry, you didn't win this time. Better luck next time!"
+      ];
+
+      // Randomly pick a result, but limit winners to 3
+      let winners = JSON.parse(localStorage.getItem("winners")) || { first: 0, second: 0, third: 0 };
+      let randomResult;
+
+      if (winners.first < 1) {
+        randomResult = prizes[0]; // 1st prize
+        winners.first++;
+      } else if (winners.second < 1) {
+        randomResult = prizes[1]; // 2nd prize
+        winners.second++;
+      } else if (winners.third < 1) {
+        randomResult = prizes[2]; // 3rd prize
+        winners.third++;
+      } else {
+        randomResult = prizes[3]; // Loser message
+      }
+
+      result.textContent = randomResult;
+      result.style.fontSize = "1.5em";
+      result.style.fontWeight = "bold";
+
+      // Store the click and winners in localStorage
+      localStorage.setItem("hasClicked", "true");
+      localStorage.setItem("winners", JSON.stringify(winners));
+      luckyDrawBtn.style.display = "none";
+    });
+  </script>
+</body>
+</html>
